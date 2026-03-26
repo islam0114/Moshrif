@@ -1,97 +1,140 @@
-# Moshrif University ERP & Smart Attendance System 🎓
-
-Moshrif is a comprehensive smart attendance system and university ERP powered by Artificial Intelligence (Facial Recognition & Liveness Detection). It offers an automated, secure, and seamless way to manage student attendance, track lectures, and provide real-time dashboard analytics, paired with automated email notifications.
-
-## 🏗️ Architecture & Project Structure
-
-The project is divided into 4 main micro-services/components:
-
-### 1. 🧠 AI Engine (`01_AI_Engine/`)
-- **Core Technology**: Python, OpenCV, `dlib` (via `face_recognition`), Flask.
-- **Features**:
-  - Real-time video stream processing and face detection.
-  - **Custom Liveness Check (Anti-Spoofing)**: Uses Eye Aspect Ratio (EAR) and micro-movements to reject photos/mobile screens, ensuring the person is physically present.
-  - Face alignment and orientation checks (student must look directly at the camera).
-  - Headless video streaming to the frontend via a Flask web server (`/video_feed`).
-  - Sends immediate authenticated POST requests to the Backend API to securely mark attendance.
-
-### 2. ⚙️ Backend API (`02_Backend_API/`)
-- **Core Technology**: Python, FastAPI, SQLite, JWT Auth, Pandas.
-- **Features**:
-  - Comprehensive RESTful API endpoints for Admin interactions, CRUDS, and attendance processing.
-  - **JWT Authentication** for secure endpoint protection.
-  - **Automated Email Notifications**: Beautiful HTML emails sent automatically to students upon successful attendance marking via SMTP.
-  - Data aggregations for analytical dashboards (total attendance, active courses, daily stats, risk reports) using Pandas.
-  - Export functionality to generate Excel (`.xlsx`) attendance sheets.
-
-### 3. 💾 Database (`03_Database/`)
-- **Core Technology**: SQLite.
-- **Features**:
-  - Contains lightweight SQLite database `attendance.db` and DDL scripts `create_tables.py` for setup.
-  - Relational schema tables include: `students`, `courses`, `lecture_schedule`, `registrations`, `attendance_log`.
-
-### 4. 🌐 Frontend Web (`04_Frontend_Web/`)
-- **Core Technology**: React.js, TailwindCSS, Recharts.
-- **Features**:
-  - Interactive Smart Dashboard (Overview, Live Monitor, Course Management, Admin Panel).
-  - Consumes the headless AI video stream and displays live attendance statuses directly in the browser.
-  - Rich charts and statistical views powered by `recharts`.
-  - Modern, responsive, and engaging UI.
+<div align="center">
+  <h1>🎓 Moshrif University ERP & Smart Attendance System</h1>
+  <p>An advanced, AI-powered Smart Attendance and University Management System utilizing Facial Recognition, Liveness Detection, and real-time interactive dashboards.</p>
+</div>
 
 ---
 
-## 🚀 Setup and Installation
+## 📝 About The Project
+
+**Moshrif** is an integrated system designed to automate university attendance and manage academic operations. By leveraging state-of-the-art Computer Vision and AI algorithms, it ensures an interactive, secure, and touchless attendance experience. It completely eliminates proxy attendance through robust anti-spoofing measures and syncs everything in real-time to a fast, modern frontend.
+
+---
+
+## 🏗️ System Architecture (Arc)
+
+The system is built on a modern micro-services architecture consisting of 4 seamlessly integrated layers. 
+
+### 1. 🧠 AI Engine (01_AI_Engine) - `Computer Vision Layer`
+- **Tech Stack:** Python, OpenCV, `dlib` (face_recognition), Flask.
+- **Responsibilities:**
+  - Captures live video feed.
+  - **Liveness Check (Anti-Spoofing):** Calculates Eye Aspect Ratio (EAR) and micro-movements to reject photographs or digital screens.
+  - Checks if the face is directly aligned and looking at the camera.
+  - On verification, sends a JWT-authenticated POST request to the Backend API.
+  - Streams the headless video feedback via Flask directly to the frontend for live monitoring.
+
+### 2. ⚙️ Backend API (02_Backend_API) - `Business Logic Layer`
+- **Tech Stack:** Python, FastAPI, SQLite, Pandas, PyJWT, smtplib.
+- **Responsibilities:**
+  - Acts as the core bridge securely connecting the AI, Database, and Frontend layers.
+  - Exposes RESTful endpoints protected by JWT Authentication.
+  - **Automated Alerts:** Sends responsive HTML emails to students confirming attendance via SMTP.
+  - Processes data for the frontend dashboards (aggregating attendance logs, generating dynamic datasets using Pandas, identifying at-risk students).
+  - Handles Excel (`.xlsx`) report generation and file exporting.
+
+### 3. 💾 Database (03_Database) - `Data Layer`
+- **Tech Stack:** SQLite.
+- **Responsibilities:**
+  - Relational database (`attendance.db`) containing the persistent logic.
+  - **Tables:** `students`, `courses`, `lecture_schedule`, `registrations`, and `attendance_log`.
+  - Driven by the central `create_tables.py` auto-migration script.
+
+### 4. 🌐 Frontend Web (04_Frontend_Web) - `Presentation Layer`
+- **Tech Stack:** React.js, TailwindCSS, Recharts.
+- **Responsibilities:**
+  - Modern, responsive **Smart Dashboard**.
+  - **Live Monitor Screen:** Consumes the AI stream and simultaneously receives live socket updates.
+  - **Admin Panel:** GUI to manage students, courses, map schedules, and handle registrations.
+  - Interactive data visualization for attendance trends using Recharts.
+
+### 🔄 Data Flow Summary:
+1. 📷 Camera detects a face during an active lecture window.
+2. 🤖 AI Engine verifies identity and proves Liveness (Anti-Spoofing), then dispatches Student ID to Backend.
+3. ⚙️ Backend validates the current schedule room against database rules.
+4. 💾 Attendance is permanently logged into `attendance_log`.
+5. 📧 Email server immediately fires a confirmation email to the student's inbox.
+6. 🌐 Frontend Dashboard state updates instantly to reflect the "Present" status on the Live Monitor.
+
+---
+
+## 🚀 Installation & Setup
 
 ### Prerequisites
-- Python 3.10+
-- Node.js (v16+)
-- C++ Build Tools (Required in Windows to compile `dlib`)
+Before you begin, ensure you have installed:
+- [Python 3.10+](https://www.python.org/)
+- [Node.js v16+](https://nodejs.org/)
+- **C++ Build Tools** (Crucial specifically on Windows for `dlib` to compile properly).
 
-### 1. Database Setup
+### Step 1: Clone and Install Dependencies
+Navigate to the project root directory and install all required Python modules:
+```bash
+# Install AI Engine and Backend dependencies via the centralized file
+pip install -r requirements.txt
+```
+
+### Step 2: Initialize the Database
+Generate the tables and schema for the system.
 ```bash
 cd 03_Database
 python create_tables.py
-# (Optional) python fill_data.py to populate with mock data
+# If you have mock data: python fill_data.py
+cd ..
 ```
 
-### 2. Backend Setup
-```bash
-cd 02_Backend_API
-pip install fastapi uvicorn pandas bcrypt pyjwt python-dotenv openpyxl requests
-```
-*Note: Create a `.env` file in the `02_Backend_API` folder containing your secret environment variables:*
+### Step 3: Setup Environment Variables
+Navigate to `02_Backend_API` and create a `.env` file to configure your secrets:
 ```env
 ADMIN_PASSWORD=admin
-SECRET_KEY=your_super_secret_jwt_key
-SMTP_EMAIL=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
+SECRET_KEY=super_secret_key_change_me
+SMTP_EMAIL=your_real_email@gmail.com
+SMTP_PASSWORD=your_app_specific_password
 ```
-Run the server:
+
+---
+
+## ▶️ Running the System
+
+To fully boot the system, you must run the following 3 components securely located in their respective folders. It is recommended to use **3 separate terminal tabs**.
+
+### 1. Start the Backend API (Terminal 1)
 ```bash
+cd 02_Backend_API
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+*API will run on http://localhost:8000*
 
-### 3. AI Engine Setup
+### 2. Start the AI Engine (Terminal 2)
+*(Ensure the facial models `*.dat` and `encodings.pickle` exist inside the folder prior to running)*
 ```bash
 cd 01_AI_Engine
-pip install opencv-python face_recognition flask flask-cors requests numpy
-```
-*Make sure you run `trainer.py` to generate the `encodings.pickle` if not already present, then run the engine:*
-```bash
 python face_processor.py
 ```
+*The AI stream will handle the camera on port 8001.*
 
-### 4. Frontend Web Setup
+### 3. Start the Frontend Application (Terminal 3)
 ```bash
 cd 04_Frontend_Web
 npm install
 npm start
 ```
-The application will launch on `http://localhost:3000`.
+*The Web App will automatically open at http://localhost:3000*
 
 ---
 
-## 🛡️ Security Details
-- **Hardware Anti-Spoofing:** The AI layer algorithmically calculates eye variance and orientation ratios to physically block printouts or digital playback.
-- **Micro-service Isolation:** AI Engine communicates securely with the Backend via JWT tokens.
-- **Encryption:** Instructor and Admin passwords are encrypted with one-way `bcrypt` hashes inside the database.
+## 🔐 Default Passwords & Credentials
+
+For full access, use these initial development passwords. *(Found in `password.txt`)*
+
+| Role / Target           | Default Credential            | Note                                    |
+|-------------------------|-------------------------------|-----------------------------------------|
+| **Admin Dashboard**     | `admin`                       | Change via `.env` (ADMIN_PASSWORD)      |
+| **Instructor Course**   | `1234`                        | Assigned on course creation             |
+| **JWT Secret**          | `super_secret_key_change_me`  | Change via `.env` (SECRET_KEY)          |
+
+---
+
+## 🛡️ Security Features
+- **Biometric Anti-Spoofing:** Blocks digital screens and printed masks. Algorithm depends on subtle variance factors in eye states and nose bridging.
+- **REST Protection:** No database endpoints are exposed without verifying valid `Bearer JWT` headers.
+- **Data Protection:** Instructor passwords are treated using one-way `bcrypt` hashing before touching the SQLite file.
