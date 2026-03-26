@@ -1,0 +1,81 @@
+# ---------------------------------------------
+# General
+# ---------------------------------------------
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+*~
+*.log
+.vscode/
+
+# ---------------------------------------------
+# Python (01_AI_Engine, 02_Backend_API, 03_Database)
+# ---------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment Variables
+.env
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ---------------------------------------------
+# Node.js / React (04_Frontend_Web)
+# ---------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+# build output
+04_Frontend_Web/build/
+04_Frontend_Web/dist/
+
+# ---------------------------------------------
+# Project Specific
+# ---------------------------------------------
+# SQLite Databases
+*.db
+*.sqlite3
+03_Database/attendance.db
+
+# Excel Exports
+*.xlsx
+*.csv
+
+# Sensitive Files
+password.txt
+
+# Large AI Models (Optional: Comment out if you want to push them)
+# 01_AI_Engine/*.dat
+# 01_AI_Engine/*.pickle

@@ -1,0 +1,23 @@
+# ==========================================
+# Moshrif University ERP - Python Requirements
+# ==========================================
+
+# 1. Backend API Dependencies (02_Backend_API)
+fastapi>=0.110.0
+uvicorn>=0.28.0
+pydantic>=2.6.0
+pandas>=2.2.0
+bcrypt>=4.1.2
+PyJWT>=2.8.0
+python-dotenv>=1.0.1
+openpyxl>=3.1.2
+requests>=2.31.0
+
+# 2. AI Engine Dependencies (01_AI_Engine)
+# Note: Installing 'dlib' and 'face_recognition' on Windows requires C++ Build Tools.
+dlib>=19.24.0
+face_recognition>=1.3.0
+opencv-python>=4.9.0.80
+numpy>=1.26.4
+Flask>=3.0.3
+Flask-Cors>=4.0.0
